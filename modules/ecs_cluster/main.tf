@@ -2,10 +2,20 @@
 
 resource "aws_ecs_cluster" "this" {
   name = var.cluster_name
-  capacity_providers = ["FARGATE"]
   setting {
     name  = "containerInsights"
     value = var.enable_container_insights ? "enabled" : "disabled"
+  }
+}
+resource "aws_ecs_cluster_capacity_providers" "this" {
+  cluster_name = var.cluster_name
+
+  capacity_providers = ["FARGATE"]
+
+  default_capacity_provider_strategy {
+    base              = 1
+    weight            = 100
+    capacity_provider = "FARGATE"
   }
 }
 
